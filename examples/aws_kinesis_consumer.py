@@ -10,7 +10,7 @@ from boto_session_manager import BotoSesManager
 
 from unistream.api import (
     KinesisRecord,
-    Shard,
+    KinesisStreamShard,
     DynamoDBS3CheckPoint,
     AwsKinesisStreamConsumer,
 )
@@ -68,7 +68,7 @@ dynamodb_table = "dynamodb_s3_checkpoint"
 dynamodb_pk_name = "id"
 dynamodb_pk_value = "s3://awshsh-app-dev-us-east-1-data/projects/unistream/aws_kinesis_stream_consumer_demo/checkpoint.json"
 res = bsm.kinesis_client.list_shards(StreamName=stream_name)
-shard_id = Shard.from_list_shards_response(res)[0].ShardId
+shard_id = KinesisStreamShard.from_list_shards_response(res)[0].ShardId
 consumer_id = f"{stream_name}-{shard_id}"
 path_checkpoint = dir_demo.joinpath(f"{consumer_id}.checkpoint.json")
 path_records = dir_demo.joinpath(f"{consumer_id}.records.json")

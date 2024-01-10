@@ -7,7 +7,9 @@ Usage example::
 
     >>> unistream.DataClassRecord
     >>> unistream.FileBuffer
+    >>> unistream.SimpleCheckpoint
     >>> unistream.SimpleProducer
+    >>> unistream.SimpleConsumer
 """
 
 from .logger import logger
@@ -55,7 +57,7 @@ except ImportError:  # pragma: no cover
     pass
 
 try:
-    from .consumers.aws_kinesis import Shard
+    from .consumers.aws_kinesis import KinesisStreamShard
     from .consumers.aws_kinesis import AwsKinesisStreamConsumer
 except ImportError:  # pragma: no cover
     pass

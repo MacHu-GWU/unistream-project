@@ -34,7 +34,7 @@ class ShardSequenceNumberRange(DataClass):
 
 
 @dataclasses.dataclass
-class Shard(DataClass):
+class KinesisStreamShard(DataClass):
     """
     Represent metadata of a Kinesis Stream Shard.
     """
@@ -48,7 +48,7 @@ class Shard(DataClass):
     # fmt: on
 
     @classmethod
-    def from_list_shards_response(cls, res: dict) -> T.List["Shard"]:
+    def from_list_shards_response(cls, res: dict) -> T.List["KinesisStreamShard"]:
         """
         Create a list of shard objects from
         `list_shards <https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/kinesis/paginator/ListShards.html>`_
@@ -56,10 +56,6 @@ class Shard(DataClass):
         """
         shards = res.get("Shards", [])
         return [cls.from_dict(shard) for shard in shards]
-
-
-class ShardIsClosedError(Exception):
-    pass
 
 
 @dataclasses.dataclass
@@ -148,3 +144,7 @@ class AwsKinesisStreamConsumer(BaseAwsKinesisStreamConsumer):
     can explicitly call :meth:`Consumer.get_records`, :meth:`Consumer.process_record` method
      to get records and process record.
     """
+
+
+# todo: Add a Kinesis Consumer that use a FIFO SQS as DLQ.
+# todo: Add a Kinesis Consumer that use another Kinesis Stream SQS as DLQ.

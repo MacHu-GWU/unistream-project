@@ -9,8 +9,8 @@ x.y.z (Backlog)
 **Features and Improvements**
 
 - Add ``KafkaProducer``.
-- Add ``DynamoDBCheckpoint``.
-- Add ``AwsKinesisStreamConsumer``.
+- Add a Kinesis Consumer that use a FIFO SQS as DLQ.
+- Add a Kinesis Consumer that use another Kinesis Stream SQS as DLQ.
 - use a FIFO SQS or another kinesis stream as DLA for ``AwsKinesisStreamConsumer``.
 
 **Minor Improvements**
@@ -20,59 +20,45 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
-0.1.1 (2024-01-09)
+0.1.1 (2024-01-10)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Note**
+
+- This project is originally called `abstract_producer <https://github.com/MacHu-GWU/abstract_producer-project>`_, since we include a lot consumer features in this project, we rename it to ``unistream``.
+
 **Features and Improvements**
 
-- Re-design the code base. Put concrete class and base class in different modules.
-- Add the abstract :class:`~unistream.consumer.CheckPoint` base class.
-- Rename ``AwsKinesisConsumer`` to ``PocAwsKinesisConsumer`` because it uses local file for checkpoint, which is not ideal for production.
-- Add retry exponential backoff to all ``Consumer``.
 - Add the following public API:
+    - ``unistream.api.logger``
+    - ``unistream.api.T_RECORD``
+    - ``unistream.api.T_BUFFER``
+    - ``unistream.api.T_PRODUCER``
+    - ``unistream.api.T_CHECK_POINT``
+    - ``unistream.api.T_CONSUMER``
+    - ``unistream.api.BaseRecord``
+    - ``unistream.api.BaseBuffer``
+    - ``unistream.api.RetryConfig``
+    - ``unistream.api.BaseProducer``
+    - ``unistream.api.T_POINTER``
+    - ``unistream.api.StatusEnum``
+    - ``unistream.api.Tracker``
+    - ``unistream.api.T_TRACKER``
+    - ``unistream.api.BaseCheckPoint``
+    - ``unistream.api.BaseConsumer``
+    - ``unistream.api.exc``
+    - ``unistream.api.utils``
+    - ``unistream.api.DataClassRecord``
+    - ``unistream.api.T_DATA_CLASS_RECORD``
+    - ``unistream.api.FileBuffer``
+    - ``unistream.api.SimpleProducer``
     - ``unistream.api.SimpleCheckpoint``
     - ``unistream.api.SimpleConsumer``
-    - ``unistream.api.PocAwsKinesisStreamConsumer``
-
-**Minor Improvements**
-
-- greatly improve the document
-- greatly improve the unit test
-- greatly improve the examples
-
-
-0.2.1 (2024-01-05)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-**Features and Improvements**
-
-- Add concrete implementations ``KinesisRecord``, ``KinesisGetRecordsResponseRecord``, ``AwsKinesisStreamProducer``, ``AwsKinesisConsumer``.
-
-- Add the following public API:
     - ``unistream.api.KinesisRecord``
     - ``unistream.api.T_KINESIS_RECORD``
     - ``unistream.api.KinesisGetRecordsResponseRecord``
     - ``unistream.api.T_KINESIS_GET_RECORDS_RESPONSE_RECORD``
-    - ``unistream.api.AwsKinesisStreamProducer``
-    - ``unistream.api.Shard``
-    - ``unistream.api.AwsKinesisConsumer``
-
-
-0.1.1 (2024-01-03)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-**Features and Improvements**
-
-- First release
-- Add the base class ``BaseRecord``, ``BaseBuffer``, ``BaseProducer``.
-- Add concrete implementations ``DataClassRecord``, ``FileBuffer``, ``SimpleProducer``, ``AwsCloudWatchLogsProducer``.
-- Add the following public API:
-    - ``unistream.api.T_RECORD``
-    - ``unistream.api.T_BUFFER``
-    - ``unistream.api.T_PRODUCER``
-    - ``unistream.api.BaseRecord``
-    - ``unistream.api.DataClassRecord``
-    - ``unistream.api.BaseBuffer``
-    - ``unistream.api.FileBuffer``
-    - ``unistream.api.BaseProducer``
-    - ``unistream.api.SimpleProducer``
-    - ``unistream.api.exc``
-    - ``unistream.api.utils``
     - ``unistream.api.AwsCloudWatchLogsProducer``
+    - ``unistream.api.AwsKinesisStreamProducer``
+    - ``unistream.api.DynamoDBS3CheckPoint``
+    - ``unistream.api.KinesisStreamShard``
+    - ``unistream.api.AwsKinesisStreamConsumer``

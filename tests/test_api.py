@@ -37,7 +37,7 @@ def test():
     _ = api.AwsCloudWatchLogsProducer
     _ = api.AwsKinesisStreamProducer
     _ = api.DynamoDBS3CheckPoint
-    _ = api.Shard
+    _ = api.KinesisStreamShard
     _ = api.AwsKinesisStreamConsumer
 
 
