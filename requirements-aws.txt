@@ -1,0 +1,2 @@
+# AWS Kinesis producer and consumer
+boto_session_manager>=1.6.1,<2.0.0

@@ -1,0 +1,10 @@
+# This requirements file should only include dependencies for development
+pathlib_mate                            # autopep8 your code
+twine                                   # make distribution archive
+wheel                                   # make pre-compiled distribution package
+build                                   # build distribution package
+boto_session_manager>=1.6.1,<2.0.0
+func_args>=0.1.1,<1.0.0
+boto3_stubs[s3]
+boto3_stubs[dynamodb]
+boto3_stubs[kinesis]
