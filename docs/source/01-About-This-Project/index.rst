@@ -34,8 +34,6 @@ This project provides an abstraction layer of producer. **It has the following l
 - :class:`~unistream.abstraction.AbcCheckpoint`: Abstract Checkpoint Class for Data Consumer.
 - :class:`~unistream.abstraction.AbcConsumer`: Abstract Class for Data Consumer.
 
-Based on these three low level modules, this project also provides some concrete implementations of producer client library for popular streaming systems. Also, you can easily build their own producer client library for other streaming systems by inheriting the three low level modules.
-
 Additionally, **this project provides a set of base classes that can assist in creating concrete implementations for specific stream systems using various data persistency backends**.
 
 - :class:`~unistream.producer.BaseProducer`: base class with pre-defined logics for all kinds of producer.
