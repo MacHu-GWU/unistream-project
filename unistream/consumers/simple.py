@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`SimpleConsumer`, a file-based consumer for local development
+and testing.
 """
 
 import dataclasses

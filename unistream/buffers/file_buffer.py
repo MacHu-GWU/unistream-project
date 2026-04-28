@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`FileBuffer`, a WAL-based buffer using local files.
 """
 
 import sys

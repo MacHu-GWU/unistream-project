@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`RetryConfig` and :class:`BaseProducer`, the base class
+for all producer implementations.
 """
 
 import dataclasses
@@ -87,9 +88,13 @@ class RetryConfig(BaseModel):
 @dataclasses.dataclass
 class BaseProducer(AbcProducer, BaseModel):
     """
-    todo: docstring
+    Base class for producer implementations.
 
-    A producer has to have a buffer backend and a retry config.
+    Provides buffer management and exponential-backoff retry logic.
+    Subclasses only need to implement :meth:`~unistream.abstraction.AbcProducer.send`.
+
+    :param buffer: the :class:`~unistream.abstraction.AbcBuffer` backend for batching records.
+    :param retry_config: the :class:`RetryConfig` for send retry behavior.
     """
 
     buffer: AbcBuffer = dataclasses.field(default=REQ)

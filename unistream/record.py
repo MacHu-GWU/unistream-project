@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`BaseRecord`, the base class for all record types.
 """
 
 from .abstraction import AbcRecord
@@ -9,7 +9,13 @@ from .abstraction import AbcRecord
 
 class BaseRecord(AbcRecord):
     """
-    todo: docstring
+    Base class for record implementations.
+
+    Subclasses should provide concrete ``serialize`` and ``deserialize`` methods
+    as defined in :class:`~unistream.abstraction.AbcRecord`.
+
+    See :class:`~unistream.records.dataclass.DataClassRecord` for a concrete
+    implementation using :mod:`dataclasses`.
     """
 
     pass

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`SimpleProducer`, a file-based producer for local development
+and testing.
 """
 
 import dataclasses

@@ -20,11 +20,6 @@ import dataclasses
 from func_args.api import REQ, BaseModel
 from tenacity import retry, wait_exponential, stop_after_attempt, RetryError
 
-try:
-    from rich import print as rprint
-except:
-    pass
-
 from .exc import StreamIsClosedError
 from .logger import logger
 from .abstraction import AbcRecord, AbcConsumer

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`SimpleCheckpoint`, a JSON-file-based checkpoint for local
+development and testing.
 """
 
 import json

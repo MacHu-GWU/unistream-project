@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-todo: docstring
+Implements :class:`DataClassRecord`, a frozen record built on :mod:`dataclasses`.
 """
 
 import typing as T
