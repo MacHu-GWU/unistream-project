@@ -1,2 +1,0 @@
-# Core dependencies goes here
-tenacity>=8.2.0,<9.0.0

@@ -1,5 +1,7 @@
 # User Settings
 unistream.egg-info/
+docs/source/**/index.md
+.claude/claude-code-message*
 tmp/
 examples/**/*.json
 examples/**/*.txt
