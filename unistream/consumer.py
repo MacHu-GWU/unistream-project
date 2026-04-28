@@ -27,8 +27,8 @@ except:
 
 from .exc import StreamIsClosedError
 from .logger import logger
-from .abstraction import T_RECORD, T_CHECK_POINT, AbcConsumer
-from .checkpoint import T_POINTER, StatusEnum
+from .abstraction import AbcRecord, AbcConsumer
+from .checkpoint import T_POINTER, BaseCheckPoint, StatusEnum
 
 
 @dataclasses.dataclass
@@ -50,20 +50,20 @@ class BaseConsumer(AbcConsumer, BaseModel):
     :param delay: the delay time between pulling two batches.
     """
 
-    record_class: T.Type[T_RECORD] = dataclasses.field(default=REQ)
+    record_class: type[AbcRecord] = dataclasses.field(default=REQ)
     limit: int = dataclasses.field(default=REQ)
-    checkpoint: T_CHECK_POINT = dataclasses.field(default=REQ)
+    checkpoint: BaseCheckPoint = dataclasses.field(default=REQ)
     exp_backoff_multiplier: int = dataclasses.field(default=REQ)
     exp_backoff_base: int = dataclasses.field(default=REQ)
     exp_backoff_min: int = dataclasses.field(default=REQ)
     exp_backoff_max: int = dataclasses.field(default=REQ)
     skip_error: bool = dataclasses.field(default=REQ)
-    delay: T.Union[int, float] = dataclasses.field(default=REQ)
+    delay: int | float = dataclasses.field(default=REQ)
 
     def get_records(
         self,
         limit: int = None,
-    ) -> T.Tuple[T.List[T_RECORD], T_POINTER]:
+    ) -> tuple[list[AbcRecord], T_POINTER]:
         """
         Get records from the stream system and determine the value of the
         next pointer for the next batch if we successfully process
@@ -84,7 +84,7 @@ class BaseConsumer(AbcConsumer, BaseModel):
         """
         raise NotImplementedError
 
-    def process_record(self, record: T_RECORD):
+    def process_record(self, record: AbcRecord):
         """
         This method defines how to process a failed record.
 
@@ -94,7 +94,7 @@ class BaseConsumer(AbcConsumer, BaseModel):
         """
         raise NotImplementedError
 
-    def process_failed_record(self, record: T_RECORD):
+    def process_failed_record(self, record: AbcRecord):
         """
         This method defines how to process a failed record.
 
@@ -123,7 +123,7 @@ class BaseConsumer(AbcConsumer, BaseModel):
             self.checkpoint.next_pointer = None
             self.checkpoint.dump()
 
-    def _process_record_with_checkpoint(self, record: T_RECORD):
+    def _process_record_with_checkpoint(self, record: AbcRecord):
         """
         A wrapper method of :meth:`BaseConsumer.process_record`,
          process the record and also handle the checkpoint.
@@ -142,8 +142,8 @@ class BaseConsumer(AbcConsumer, BaseModel):
 
     def _process_record(
         self,
-        record: T_RECORD,
-    ) -> T.Tuple[T.Optional[bool], T.Any]:
+        record: AbcRecord,
+    ) -> tuple[bool | None, T.Any]:
         """
         A wrapper method of :meth:`BaseConsumer._process_record_with_checkpoint`,
         with retry logic.

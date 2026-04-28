@@ -4,13 +4,12 @@
 todo: docstring
 """
 
-import typing as T
 import dataclasses
 from pathlib import Path
 
 from func_args.api import REQ
 
-from ..abstraction import T_RECORD, T_BUFFER
+from ..abstraction import AbcRecord, AbcBuffer
 from ..producer import BaseProducer, RetryConfig
 
 
@@ -38,7 +37,7 @@ class SimpleProducer(BaseProducer):
     @classmethod
     def new(
         cls,
-        buffer: T_BUFFER,
+        buffer: AbcBuffer,
         retry_config: RetryConfig,
         path_sink: Path,
     ):
@@ -56,7 +55,7 @@ class SimpleProducer(BaseProducer):
             path_sink=path_sink,
         )
 
-    def send(self, records: T.List[T_RECORD]):
+    def send(self, records: list[AbcRecord]):
         """
         Send records to the sink, which is an append-only file
         """

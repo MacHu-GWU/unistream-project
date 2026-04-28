@@ -14,6 +14,7 @@
 
 import typing as T
 import abc
+from collections.abc import Iterable
 from datetime import datetime
 
 
@@ -133,7 +134,7 @@ class AbcBuffer(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def put(self, record: T_RECORD):
+    def put(self, record: "AbcRecord"):
         """
         Put a record into the in-memory queue.
         """
@@ -147,7 +148,7 @@ class AbcBuffer(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def emit(self) -> T.List[T_RECORD]:
+    def emit(self) -> list["AbcRecord"]:
         """
         Emit a list of records. Older records comes first.
         """
@@ -186,7 +187,7 @@ class AbcProducer(abc.ABC):
         whether to send the records.
     """
 
-    buffer: T_BUFFER
+    buffer: "AbcBuffer"
 
     @classmethod
     @abc.abstractmethod
@@ -197,7 +198,7 @@ class AbcProducer(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def send(self, records: T.Iterable[T_RECORD]):
+    def send(self, records: Iterable["AbcRecord"]):
         """
         Send batch records to target system.
 
@@ -216,7 +217,7 @@ class AbcProducer(abc.ABC):
     @abc.abstractmethod
     def put(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
         raise_send_error: bool = False,
         verbose: bool = False,
     ):
@@ -297,7 +298,7 @@ class AbcCheckPoint(abc.ABC):
 
     def dump_records(
         self,
-        records: T.Iterable[T_RECORD],
+        records: Iterable["AbcRecord"],
     ):
         """
         Dump the batch records data to the persistence layer.
@@ -306,9 +307,9 @@ class AbcCheckPoint(abc.ABC):
 
     def load_records(
         self,
-        record_class: T.Type[T_RECORD],
+        record_class: type["AbcRecord"],
         **kwargs,
-    ) -> T.Iterable[T_RECORD]:
+    ) -> Iterable["AbcRecord"]:
         """
         Load the batch records data from the persistence layer. Not from the stream system.
         """
@@ -316,7 +317,7 @@ class AbcCheckPoint(abc.ABC):
 
     def mark_as_in_progress(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
         **kwargs,
     ):
         """
@@ -333,7 +334,7 @@ class AbcCheckPoint(abc.ABC):
 
     def mark_as_failed_or_exhausted(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
         **kwargs,
     ):
         """
@@ -350,7 +351,7 @@ class AbcCheckPoint(abc.ABC):
 
     def mark_as_succeeded(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
         **kwargs,
     ):
         """
@@ -367,7 +368,7 @@ class AbcCheckPoint(abc.ABC):
 
     def dump_as_in_progress(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
     ):
         """
         Dump the tracker to the persistence layer after calling
@@ -384,7 +385,7 @@ class AbcCheckPoint(abc.ABC):
 
     def dump_as_failed_or_exhausted(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
     ):
         """
         Dump the tracker to the persistence layer after calling
@@ -401,7 +402,7 @@ class AbcCheckPoint(abc.ABC):
 
     def dump_as_succeeded(
         self,
-        record: T_RECORD,
+        record: "AbcRecord",
     ):
         """
         Dump the tracker to the persistence layer after calling
@@ -451,14 +452,14 @@ class AbcConsumer(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_records(self) -> T.Iterable[T_RECORD]:
+    def get_records(self) -> Iterable[AbcRecord]:
         """
         Get records from the target system.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def process_record(self, record: T_RECORD):
+    def process_record(self, record: AbcRecord):
         """
         Process a record. To indicate the processing is failed, it has to
         raise an exception.
@@ -466,7 +467,7 @@ class AbcConsumer(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def process_failed_record(self, record: T_RECORD):
+    def process_failed_record(self, record: AbcRecord):
         """
         Process a failed record.
         """

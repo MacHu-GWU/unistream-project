@@ -4,7 +4,6 @@
 todo: docstring
 """
 
-import typing as T
 import dataclasses
 from datetime import datetime
 
@@ -12,7 +11,7 @@ from func_args.api import REQ, BaseModel
 
 from .utils import get_utc_now
 from .logger import logger
-from .abstraction import AbcProducer, T_RECORD, T_BUFFER
+from .abstraction import AbcRecord, AbcBuffer, AbcProducer
 
 
 def _default_exp_backoff():
@@ -35,11 +34,11 @@ class RetryConfig(BaseModel):
     :param last_error: the last error we encountered.
     """
 
-    exp_backoff: T.List[int] = dataclasses.field(default_factory=_default_exp_backoff)
+    exp_backoff: list[int] = dataclasses.field(default_factory=_default_exp_backoff)
     attempts: int = dataclasses.field(default=0)
-    first_attempt_time: T.Optional[datetime] = dataclasses.field(default=None)
-    last_attempt_time: T.Optional[datetime] = dataclasses.field(default=None)
-    last_error: T.Optional[Exception] = dataclasses.field(default=None)
+    first_attempt_time: datetime | None = dataclasses.field(default=None)
+    last_attempt_time: datetime | None = dataclasses.field(default=None)
+    last_error: Exception | None = dataclasses.field(default=None)
 
     def shall_we_retry(self, now: datetime) -> bool:
         """
@@ -93,7 +92,7 @@ class BaseProducer(AbcProducer, BaseModel):
     A producer has to have a buffer backend and a retry config.
     """
 
-    buffer: T_BUFFER = dataclasses.field(default=REQ)
+    buffer: AbcBuffer = dataclasses.field(default=REQ)
     retry_config: RetryConfig = dataclasses.field(default=REQ)
 
     @logger.emoji_block(
@@ -102,7 +101,7 @@ class BaseProducer(AbcProducer, BaseModel):
     )
     def _put(
         self,
-        record: T_RECORD,
+        record: AbcRecord,
         skip_error: bool = True,
     ):
         """
@@ -147,7 +146,7 @@ class BaseProducer(AbcProducer, BaseModel):
 
     def put(
         self,
-        record: T_RECORD,
+        record: AbcRecord,
         skip_error: bool = True,
         verbose: bool = False,
     ):

@@ -4,15 +4,15 @@
 todo: docstring
 """
 
-import typing as T
 import dataclasses
 from pathlib import Path
 from itertools import islice
 
 from func_args.api import REQ
 
-from ..abstraction import T_RECORD, T_CHECK_POINT
-from ..consumer import T_POINTER, BaseConsumer
+from ..abstraction import AbcRecord
+from ..checkpoint import T_POINTER, BaseCheckPoint
+from ..consumer import BaseConsumer
 
 
 @dataclasses.dataclass
@@ -52,17 +52,17 @@ class SimpleConsumer(BaseConsumer):
     @classmethod
     def new(
         cls,
-        record_class: T.Type[T_RECORD],
+        record_class: type[AbcRecord],
         path_source: Path,
         path_dlq: Path,
-        checkpoint: T_CHECK_POINT,
+        checkpoint: BaseCheckPoint,
         limit: int = 1000,
         exp_backoff_multiplier: int = 1,
         exp_backoff_base: int = 2,
         exp_backoff_min: int = 1,
         exp_backoff_max: int = 60,
         skip_error: bool = True,
-        delay: T.Union[int, float] = 0,
+        delay: int | float = 0,
     ):
         return cls(
             record_class=record_class,
@@ -80,8 +80,8 @@ class SimpleConsumer(BaseConsumer):
 
     def get_records(
         self,
-        limit: T.Optional[int] = None,
-    ) -> T.Tuple[T.List[T_RECORD], T_POINTER]:
+        limit: int | None = None,
+    ) -> tuple[list[AbcRecord], T_POINTER]:
         if limit is None:
             limit = self.limit
         records = list()

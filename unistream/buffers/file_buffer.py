@@ -4,15 +4,15 @@
 todo: docstring
 """
 
-import typing as T
 import sys
 import random
 import collections
+from collections.abc import Iterable
 from pathlib import Path
 from datetime import datetime, timezone
 
 from ..exc import BufferIsEmptyError
-from ..abstraction import T_RECORD
+from ..abstraction import AbcRecord
 from ..buffer import BaseBuffer
 
 
@@ -42,7 +42,7 @@ class FileBuffer(BaseBuffer):
 
     def __init__(
         self,
-        record_class: T.Type[T_RECORD],
+        record_class: type[AbcRecord],
         path_wal: Path,
         max_records: int = 1000,
         max_bytes: int = 1000000,  # KB
@@ -55,15 +55,15 @@ class FileBuffer(BaseBuffer):
         self.n_records = 0
         self.n_bytes = 0
 
-        self.memory_queue: T.Deque[T_RECORD] = collections.deque()
-        self.memory_serialization_queue: T.Deque[str] = collections.deque()
-        self.storage_queue: T.Deque[Path] = collections.deque()
+        self.memory_queue: collections.deque[AbcRecord] = collections.deque()
+        self.memory_serialization_queue: collections.deque[str] = collections.deque()
+        self.storage_queue: collections.deque[Path] = collections.deque()
 
-        self.emitted_records: T.Optional[T.List[T_RECORD]] = None
+        self.emitted_records: list[AbcRecord] | None = None
 
         self._validate_path()
 
-    def _read_log_file(self, path_wal: Path) -> T.List[T_RECORD]:
+    def _read_log_file(self, path_wal: Path) -> list[AbcRecord]:
         """
         Load records from one WAL file.
         """
@@ -83,7 +83,7 @@ class FileBuffer(BaseBuffer):
             f"{self.path_wal.stem}.{dt_str}{self.path_wal.suffix}"
         )
 
-    def _get_old_log_files(self) -> T.List[Path]:
+    def _get_old_log_files(self) -> list[Path]:
         """
         Discover the list of path of the old WAL files. Their file name looks like::
 
@@ -103,7 +103,7 @@ class FileBuffer(BaseBuffer):
         path_list.sort()  # sort by timestamp in filename to ensure the order
         return path_list
 
-    def _push(self, record: T_RECORD):
+    def _push(self, record: AbcRecord):
         """
         Push a record to the memory queue and write it to WAL.
         """
@@ -115,7 +115,7 @@ class FileBuffer(BaseBuffer):
         self.n_records += 1
         self.n_bytes += sys.getsizeof(data)
 
-    def _push_many(self, records: T.Iterable[T_RECORD]):
+    def _push_many(self, records: Iterable[AbcRecord]):
         for record in records:
             self._push(record)
 
@@ -147,7 +147,7 @@ class FileBuffer(BaseBuffer):
     @classmethod
     def new(
         cls,
-        record_class: T.Type[T_RECORD],
+        record_class: type[AbcRecord],
         path_wal: Path,
         max_records: int = 1000,
         max_bytes: int = 1000000,  # 1MB
@@ -195,7 +195,7 @@ class FileBuffer(BaseBuffer):
         # clear memory queue
         self.clear_memory_queue()
 
-    def put(self, record: T_RECORD):
+    def put(self, record: AbcRecord):
         """
         Put one record to the buffer.
 
@@ -225,7 +225,7 @@ class FileBuffer(BaseBuffer):
         """
         return len(self.storage_queue) > 0
 
-    def _emit(self) -> T.List[T_RECORD]:
+    def _emit(self) -> list[AbcRecord]:
         """
         Emit the records due to the buffer is full.
         """
@@ -237,7 +237,7 @@ class FileBuffer(BaseBuffer):
         else:
             raise BufferIsEmptyError
 
-    def emit(self) -> T.List[T_RECORD]:
+    def emit(self) -> list[AbcRecord]:
         """
         Emit the records due to the buffer is full. Similar to ``_emit()``,
         it leverages the cache to reduce IO.

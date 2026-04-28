@@ -34,7 +34,7 @@ from .vendor.better_dataclass import DataClass
 
 from .logger import logger
 from .utils import EPOCH_STR, get_utc_now
-from .abstraction import T_RECORD, AbcCheckPoint
+from .abstraction import AbcRecord, AbcCheckPoint
 
 
 class StatusEnum(BetterIntEnum):
@@ -85,7 +85,7 @@ class Tracker(DataClass, BaseModel):
     attempts: int = dataclasses.field(default=REQ)
     create_time: str = dataclasses.field(default=REQ)
     update_time: str = dataclasses.field(default=REQ)
-    lock: T.Optional[str] = dataclasses.field(default=None)
+    lock: str | None = dataclasses.field(default=None)
     lock_time: str = dataclasses.field(default=EPOCH_STR)
     lock_expire_time: str = dataclasses.field(default=EPOCH_STR)
     data: dict = dataclasses.field(default_factory=dict)
@@ -110,7 +110,7 @@ class Tracker(DataClass, BaseModel):
 
 T_TRACKER = T.TypeVar("T_TRACKER", bound=Tracker)
 
-T_POINTER = T.Union[str, int]
+T_POINTER = str | int
 
 
 @dataclasses.dataclass
@@ -138,11 +138,11 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
     max_attempts: int = dataclasses.field(default=REQ)
     initial_pointer: T_POINTER = dataclasses.field(default=REQ)
     start_pointer: T_POINTER = dataclasses.field(default=REQ)
-    next_pointer: T.Optional[T_POINTER] = dataclasses.field(default=REQ)
+    next_pointer: T_POINTER | None = dataclasses.field(default=REQ)
     batch_sequence: int = dataclasses.field(default=REQ)
-    batch: T.Dict[str, Tracker] = Tracker.map_of_nested_field(default=REQ)
+    batch: dict[str, Tracker] = Tracker.map_of_nested_field(default=REQ)
 
-    def get_tracker(self, record: T_RECORD) -> T_TRACKER:
+    def get_tracker(self, record: AbcRecord) -> Tracker:
         """
         Get the tracker for the given record.
         """
@@ -150,9 +150,9 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
 
     def is_record_locked(
         self,
-        record: T_RECORD,
-        lock: T.Optional[str] = None,
-        now: T.Optional[datetime] = None,
+        record: AbcRecord,
+        lock: str | None = None,
+        now: datetime | None = None,
     ) -> bool:
         """
         Check if the tracker is locked.
@@ -177,9 +177,9 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
 
     def mark_as_in_progress(
         self,
-        record: T_RECORD,
-        now: T.Optional[datetime] = None,
-        expire: T.Optional[int] = None,
+        record: AbcRecord,
+        now: datetime | None = None,
+        expire: int | None = None,
     ):
         """
         Set status as in_progress and lock the record so other workers can't process it.
@@ -194,10 +194,6 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
         :param expire: the lock expiration time in seconds. If not provided,
             use ``self.lock_expire``.
         """
-        # logger.info(
-        #     f"set status = {StatusEnum.in_progress!r} (⏳ in_progress) "
-        #     f"and 🔓 lock the record {record.id!r}."
-        # )
         if now is None:
             now = get_utc_now()
         if expire is None:
@@ -212,10 +208,10 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
 
     def mark_as_failed_or_exhausted(
         self,
-        record: T_RECORD,
+        record: AbcRecord,
         e: Exception,
-        now: T.Optional[datetime] = None,
-        max_attempts: T.Optional[int] = None,
+        now: datetime | None = None,
+        max_attempts: int | None = None,
     ):
         """
         Mark the tracker as failed or exhausted.
@@ -238,18 +234,8 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
         tracker = self.get_tracker(record)
         if tracker.attempts >= max_attempts:
             tracker.status = StatusEnum.exhausted.value
-            # logger.info(
-            #     f"❌ record failed {max_attempts} times already, "
-            #     f"set status = {tracker.status} (🚫 ignored) "
-            #     f"and 🔐 unlock the record {record.id!r}."
-            # )
         else:
             tracker.status = StatusEnum.failed.value
-            # logger.info(
-            #     f"❌ record failed, "
-            #     f"set status = {tracker.status} (❌ failed) "
-            #     f"and 🔐 unlock the record {record.id!r}."
-            # )
         tracker.update_time = now.isoformat()
         tracker.lock = None
         tracker.errors = {
@@ -259,8 +245,8 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
 
     def mark_as_succeeded(
         self,
-        record: T_RECORD,
-        now: T.Optional[datetime] = None,
+        record: AbcRecord,
+        now: datetime | None = None,
         **kwargs,
     ):
         """
@@ -278,11 +264,6 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
             now = get_utc_now()
         tracker = self.get_tracker(record)
         status = StatusEnum.succeeded.value
-        # logger.info(
-        #     f"task succeeded, "
-        #     f"set status = {status!r} (✅ succeeded) "
-        #     f"and 🔐 unlock the record {record.id!r}."
-        # )
         tracker.status = status
         tracker.update_time = now.isoformat()
         tracker.lock = None
@@ -305,8 +286,8 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
 
     def update_for_new_batch(
         self,
-        records: T.List[T_RECORD],
-        next_pointer: T.Optional[T_POINTER] = None,
+        records: list[AbcRecord],
+        next_pointer: T_POINTER | None = None,
     ):
         """
         Call this method when just received a new batch of records. It will
@@ -337,8 +318,8 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
 
     def get_not_succeeded_records(
         self,
-        record_class: T.Type[T_RECORD],
-        records: T.Optional[T.List[T_RECORD]] = None,
+        record_class: type[AbcRecord],
+        records: list[AbcRecord] | None = None,
         **kwargs,
     ):
         """

@@ -4,14 +4,14 @@
 todo: docstring
 """
 
-import typing as T
 import json
 import dataclasses
+from collections.abc import Iterable
 from pathlib import Path
 
 from func_args.api import REQ
 
-from ..abstraction import T_RECORD, T_CHECK_POINT
+from ..abstraction import AbcRecord
 from ..checkpoint import (
     T_POINTER,
     Tracker,
@@ -51,10 +51,10 @@ class SimpleCheckpoint(BaseCheckPoint):
         max_attempts: int = 3,
         initial_pointer: T_POINTER = 0,
         start_pointer: T_POINTER = 0,
-        next_pointer: T.Optional[T_POINTER] = None,
+        next_pointer: T_POINTER | None = None,
         batch_sequence: int = 0,
-        batch: T.Optional[T.Dict[str, Tracker]] = None,
-    ) -> "T_CHECK_POINT":
+        batch: dict[str, Tracker] | None = None,
+    ) -> "SimpleCheckpoint":
         path_checkpoint = Path(checkpoint_file)
         path_records = Path(records_file)
         if path_checkpoint.exists():
@@ -81,7 +81,7 @@ class SimpleCheckpoint(BaseCheckPoint):
 
     def dump_records(
         self,
-        records: T.Iterable[T_RECORD],
+        records: Iterable[AbcRecord],
     ):
         """
         Dump the records in a batch to the persistence layer.
@@ -92,9 +92,9 @@ class SimpleCheckpoint(BaseCheckPoint):
 
     def load_records(
         self,
-        record_class: T.Type[T_RECORD],
+        record_class: type[AbcRecord],
         **kwargs,
-    ) -> T.List[T_RECORD]:
+    ) -> list[AbcRecord]:
         """
         Load the batch records from the persistence layer.
         """
@@ -107,7 +107,7 @@ class SimpleCheckpoint(BaseCheckPoint):
 
     def dump_as_in_progress(
         self,
-        record: T_RECORD,
+        record: AbcRecord,
     ):
         """
         Dump the tracker to the persistence layer after calling
@@ -124,7 +124,7 @@ class SimpleCheckpoint(BaseCheckPoint):
 
     def dump_as_failed_or_exhausted(
         self,
-        record: T_RECORD,
+        record: AbcRecord,
     ):
         """
         Dump the tracker to the persistence layer after calling
@@ -141,7 +141,7 @@ class SimpleCheckpoint(BaseCheckPoint):
 
     def dump_as_succeeded(
         self,
-        record: T_RECORD,
+        record: AbcRecord,
     ):
         """
         Dump the tracker to the persistence layer after calling

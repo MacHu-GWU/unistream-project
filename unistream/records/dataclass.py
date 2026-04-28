@@ -37,9 +37,9 @@ class DataClassRecord(BaseRecord, BaseFrozenModel):
 
     @classmethod
     def deserialize(
-        cls: T.Type["T_DATA_CLASS_RECORD"],
+        cls,
         data: str,
-    ) -> "T_DATA_CLASS_RECORD":
+    ) -> "DataClassRecord":
         return cls(**json.loads(data))
 
 
