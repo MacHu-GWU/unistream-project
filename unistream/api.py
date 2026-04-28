@@ -12,6 +12,10 @@ Usage example::
     >>> unistream.SimpleConsumer
 """
 
+from .exc import BufferIsEmptyError
+from .exc import SendError
+from .exc import ProcessError
+from .exc import StreamIsClosedError
 from .logger import logger
 from .abstraction import T_RECORD
 from .abstraction import T_BUFFER
@@ -28,8 +32,6 @@ from .checkpoint import Tracker
 from .checkpoint import T_TRACKER
 from .checkpoint import BaseCheckPoint
 from .consumer import BaseConsumer
-from . import exc
-from . import utils
 from .records.dataclass import DataClassRecord
 from .records.dataclass import T_DATA_CLASS_RECORD
 from .buffers.file_buffer import FileBuffer

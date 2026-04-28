@@ -21,8 +21,6 @@ def test():
     _ = api.T_TRACKER
     _ = api.BaseCheckPoint
     _ = api.BaseConsumer
-    _ = api.exc
-    _ = api.utils
     _ = api.DataClassRecord
     _ = api.T_DATA_CLASS_RECORD
     _ = api.FileBuffer
