@@ -36,28 +36,3 @@ from .buffers.file_buffer import FileBuffer
 from .producers.simple import SimpleProducer
 from .checkpoints.simple import SimpleCheckpoint
 from .consumers.simple import SimpleConsumer
-
-try:
-    from .records.aws_kinesis import KinesisRecord
-    from .records.aws_kinesis import T_KINESIS_RECORD
-    from .records.aws_kinesis import KinesisGetRecordsResponseRecord
-    from .records.aws_kinesis import T_KINESIS_GET_RECORDS_RESPONSE_RECORD
-except ImportError:  # pragma: no cover
-    pass
-
-try:
-    from .producers.aws_cloudwatch_logs import AwsCloudWatchLogsProducer
-    from .producers.aws_kinesis import AwsKinesisStreamProducer
-except ImportError:  # pragma: no cover
-    pass
-
-try:
-    from .checkpoints.dynamodb_s3 import DynamoDBS3CheckPoint
-except ImportError:  # pragma: no cover
-    pass
-
-try:
-    from .consumers.aws_kinesis import KinesisStreamShard
-    from .consumers.aws_kinesis import AwsKinesisStreamConsumer
-except ImportError:  # pragma: no cover
-    pass

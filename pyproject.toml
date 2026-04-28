@@ -46,6 +46,7 @@ classifiers = [
 # ------------------------------------------------------------------------------
 dependencies = [
     "tenacity>=8.2.0,<10.0.0",
+    "func-args>=1.0.2,<2.0.0",
 ]
 
 # ------------------------------------------------------------------------------
@@ -56,14 +57,6 @@ dependencies = [
 # IMPORTANT: all optional dependencies has to be compatible with the "requires-python" field
 # ------------------------------------------------------------------------------
 [project.optional-dependencies]
-
-aws = [
-    "boto3>=1.41.5,<2.0.0",
-    "boto_session_manager>=1.8.1,<2.0.0",
-    "boto3_stubs[s3,dynamodb,kinesis]>=1.41.5,<2.0.0",
-    "moto>=5.1.19,<6.0.0",
-    "func_args>=0.1.1,<1.0.0",
-]
 
 # ------------------------------------------------------------------------------
 # Local Development dependenceies

@@ -27,6 +27,8 @@ import traceback
 import dataclasses
 from datetime import datetime, timedelta
 
+from func_args.api import REQ, BaseModel
+
 from .vendor.better_enum import BetterIntEnum
 from .vendor.better_dataclass import DataClass
 
@@ -59,7 +61,7 @@ class StatusEnum(BetterIntEnum):
 
 
 @dataclasses.dataclass
-class Tracker(DataClass):
+class Tracker(DataClass, BaseModel):
     """
     The Tracker tracks the processing status of **each** record.
 
@@ -78,11 +80,11 @@ class Tracker(DataClass):
     :param errors: arbitrary error data in python dictionary.
     """
 
-    record_id: str = dataclasses.field()
-    status: int = dataclasses.field()
-    attempts: int = dataclasses.field()
-    create_time: str = dataclasses.field()
-    update_time: str = dataclasses.field()
+    record_id: str = dataclasses.field(default=REQ)
+    status: int = dataclasses.field(default=REQ)
+    attempts: int = dataclasses.field(default=REQ)
+    create_time: str = dataclasses.field(default=REQ)
+    update_time: str = dataclasses.field(default=REQ)
     lock: T.Optional[str] = dataclasses.field(default=None)
     lock_time: str = dataclasses.field(default=EPOCH_STR)
     lock_expire_time: str = dataclasses.field(default=EPOCH_STR)
@@ -112,7 +114,7 @@ T_POINTER = T.Union[str, int]
 
 
 @dataclasses.dataclass
-class BaseCheckPoint(DataClass, AbcCheckPoint):
+class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
     """
     CheckPoint stores the processing status, processing metadata and the origin
     records data. It is used to ensure data integrity and exactly-once processing.
@@ -132,13 +134,13 @@ class BaseCheckPoint(DataClass, AbcCheckPoint):
     :param batch: the per-record status tracking data for the current batch.
     """
 
-    lock_expire: int = dataclasses.field()
-    max_attempts: int = dataclasses.field()
-    initial_pointer: T_POINTER = dataclasses.field()
-    start_pointer: T_POINTER = dataclasses.field()
-    next_pointer: T.Optional[T_POINTER] = dataclasses.field()
-    batch_sequence: int = dataclasses.field()
-    batch: T.Dict[str, Tracker] = Tracker.map_of_nested_field()
+    lock_expire: int = dataclasses.field(default=REQ)
+    max_attempts: int = dataclasses.field(default=REQ)
+    initial_pointer: T_POINTER = dataclasses.field(default=REQ)
+    start_pointer: T_POINTER = dataclasses.field(default=REQ)
+    next_pointer: T.Optional[T_POINTER] = dataclasses.field(default=REQ)
+    batch_sequence: int = dataclasses.field(default=REQ)
+    batch: T.Dict[str, Tracker] = Tracker.map_of_nested_field(default=REQ)
 
     def get_tracker(self, record: T_RECORD) -> T_TRACKER:
         """

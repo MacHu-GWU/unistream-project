@@ -9,6 +9,8 @@ import uuid
 import json
 import dataclasses
 
+from func_args.api import BaseFrozenModel
+
 from ..utils import get_utc_now
 from ..record import BaseRecord
 
@@ -21,8 +23,8 @@ def create_at_factory() -> str:
     return get_utc_now().isoformat()
 
 
-@dataclasses.dataclass
-class DataClassRecord(BaseRecord):
+@dataclasses.dataclass(frozen=True)
+class DataClassRecord(BaseRecord, BaseFrozenModel):
     """
     Record built on top of `dataclasses <https://docs.python.org/3/library/dataclasses.html>`_.
     """

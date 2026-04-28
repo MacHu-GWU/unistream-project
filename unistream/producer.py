@@ -8,6 +8,8 @@ import typing as T
 import dataclasses
 from datetime import datetime
 
+from func_args.api import REQ, BaseModel
+
 from .utils import get_utc_now
 from .logger import logger
 from .abstraction import AbcProducer, T_RECORD, T_BUFFER
@@ -18,7 +20,7 @@ def _default_exp_backoff():
 
 
 @dataclasses.dataclass
-class RetryConfig:
+class RetryConfig(BaseModel):
     """
     The retry behavior configuration for :class:`BaseProducer`.
 
@@ -84,15 +86,15 @@ class RetryConfig:
 
 
 @dataclasses.dataclass
-class BaseProducer(AbcProducer):
+class BaseProducer(AbcProducer, BaseModel):
     """
     todo: docstring
 
     A producer has to have a buffer backend and a retry config.
     """
 
-    buffer: T_BUFFER = dataclasses.field()
-    retry_config: RetryConfig = dataclasses.field()
+    buffer: T_BUFFER = dataclasses.field(default=REQ)
+    retry_config: RetryConfig = dataclasses.field(default=REQ)
 
     @logger.emoji_block(
         msg="put record",

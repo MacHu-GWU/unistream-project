@@ -9,6 +9,8 @@ import dataclasses
 from pathlib import Path
 from itertools import islice
 
+from func_args.api import REQ
+
 from ..abstraction import T_RECORD, T_CHECK_POINT
 from ..consumer import T_POINTER, BaseConsumer
 
@@ -44,8 +46,8 @@ class SimpleConsumer(BaseConsumer):
     :param path_dlq: the path of the dead letter queue file to write to.
     """
 
-    path_source: Path = dataclasses.field()
-    path_dlq: Path = dataclasses.field()
+    path_source: Path = dataclasses.field(default=REQ)
+    path_dlq: Path = dataclasses.field(default=REQ)
 
     @classmethod
     def new(

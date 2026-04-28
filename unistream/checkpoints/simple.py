@@ -9,6 +9,8 @@ import json
 import dataclasses
 from pathlib import Path
 
+from func_args.api import REQ
+
 from ..abstraction import T_RECORD, T_CHECK_POINT
 from ..checkpoint import (
     T_POINTER,
@@ -26,8 +28,8 @@ class SimpleCheckpoint(BaseCheckPoint):
     :param path_records: the path to the records data file.
     """
 
-    checkpoint_file: str = dataclasses.field()
-    records_file: str = dataclasses.field()
+    checkpoint_file: str = dataclasses.field(default=REQ)
+    records_file: str = dataclasses.field(default=REQ)
 
     @property
     def path_checkpoint(self) -> Path:

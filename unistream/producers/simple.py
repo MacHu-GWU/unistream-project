@@ -8,6 +8,8 @@ import typing as T
 import dataclasses
 from pathlib import Path
 
+from func_args.api import REQ
+
 from ..abstraction import T_RECORD, T_BUFFER
 from ..producer import BaseProducer, RetryConfig
 
@@ -31,7 +33,7 @@ class SimpleProducer(BaseProducer):
     :param path_sink: the path of the file you want to write data to.
     """
 
-    path_sink: Path = dataclasses.field()
+    path_sink: Path = dataclasses.field(default=REQ)
 
     @classmethod
     def new(

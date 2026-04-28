@@ -30,7 +30,7 @@ def rand_value() -> int:
     return random.randint(1, 100)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class MyRecord(DataClassRecord):
     value: int = dataclasses.field(default_factory=rand_value)
 

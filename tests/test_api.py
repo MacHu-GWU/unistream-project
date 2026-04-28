@@ -30,16 +30,6 @@ def test():
     _ = api.SimpleCheckpoint
     _ = api.SimpleConsumer
 
-    _ = api.KinesisRecord
-    _ = api.T_KINESIS_RECORD
-    _ = api.KinesisGetRecordsResponseRecord
-    _ = api.T_KINESIS_GET_RECORDS_RESPONSE_RECORD
-    _ = api.AwsCloudWatchLogsProducer
-    _ = api.AwsKinesisStreamProducer
-    _ = api.DynamoDBS3CheckPoint
-    _ = api.KinesisStreamShard
-    _ = api.AwsKinesisStreamConsumer
-
 
 if __name__ == "__main__":
     from unistream.tests import run_cov_test

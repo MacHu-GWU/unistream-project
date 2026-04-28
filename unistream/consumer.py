@@ -17,6 +17,7 @@ import typing as T
 import time
 import dataclasses
 
+from func_args.api import REQ, BaseModel
 from tenacity import retry, wait_exponential, stop_after_attempt, RetryError
 
 try:
@@ -31,7 +32,7 @@ from .checkpoint import T_POINTER, StatusEnum
 
 
 @dataclasses.dataclass
-class BaseConsumer(AbcConsumer):
+class BaseConsumer(AbcConsumer, BaseModel):
     """
     Consumer continuously fetches batch records from the stream system
     and process them.
@@ -49,15 +50,15 @@ class BaseConsumer(AbcConsumer):
     :param delay: the delay time between pulling two batches.
     """
 
-    record_class: T.Type[T_RECORD] = dataclasses.field()
-    limit: int = dataclasses.field()
-    checkpoint: T_CHECK_POINT = dataclasses.field()
-    exp_backoff_multiplier: int = dataclasses.field()
-    exp_backoff_base: int = dataclasses.field()
-    exp_backoff_min: int = dataclasses.field()
-    exp_backoff_max: int = dataclasses.field()
-    skip_error: bool = dataclasses.field()
-    delay: T.Union[int, float] = dataclasses.field()
+    record_class: T.Type[T_RECORD] = dataclasses.field(default=REQ)
+    limit: int = dataclasses.field(default=REQ)
+    checkpoint: T_CHECK_POINT = dataclasses.field(default=REQ)
+    exp_backoff_multiplier: int = dataclasses.field(default=REQ)
+    exp_backoff_base: int = dataclasses.field(default=REQ)
+    exp_backoff_min: int = dataclasses.field(default=REQ)
+    exp_backoff_max: int = dataclasses.field(default=REQ)
+    skip_error: bool = dataclasses.field(default=REQ)
+    delay: T.Union[int, float] = dataclasses.field(default=REQ)
 
     def get_records(
         self,

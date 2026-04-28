@@ -8,16 +8,16 @@ x.y.z (Backlog)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
-- Add ``KafkaProducer``.
-- Add a Kinesis Consumer that use a FIFO SQS as DLQ.
-- Add a Kinesis Consumer that use another Kinesis Stream SQS as DLQ.
-- use a FIFO SQS or another kinesis stream as DLA for ``AwsKinesisStreamConsumer``.
+- Stabilize the abstract class contracts (``AbcRecord``, ``AbcBuffer``, ``AbcProducer``, ``AbcCheckPoint``, ``AbcConsumer``) for v1.0.
+- Add parallel batch processing to ``BaseConsumer`` (currently only sequential).
 
 **Minor Improvements**
 
 **Bugfixes**
 
 **Miscellaneous**
+
+- All vendor-specific implementations (AWS Kinesis, AWS CloudWatch Logs, DynamoDB+S3 checkpoint) have been removed from this core library. They will be released as separate plugin packages (e.g. ``unistream-aws-kinesis``). See ``MIGRATION.md`` for the architecture plan.
 
 
 0.1.1 (2024-01-10)
@@ -53,12 +53,3 @@ x.y.z (Backlog)
     - ``unistream.api.SimpleProducer``
     - ``unistream.api.SimpleCheckpoint``
     - ``unistream.api.SimpleConsumer``
-    - ``unistream.api.KinesisRecord``
-    - ``unistream.api.T_KINESIS_RECORD``
-    - ``unistream.api.KinesisGetRecordsResponseRecord``
-    - ``unistream.api.T_KINESIS_GET_RECORDS_RESPONSE_RECORD``
-    - ``unistream.api.AwsCloudWatchLogsProducer``
-    - ``unistream.api.AwsKinesisStreamProducer``
-    - ``unistream.api.DynamoDBS3CheckPoint``
-    - ``unistream.api.KinesisStreamShard``
-    - ``unistream.api.AwsKinesisStreamConsumer``

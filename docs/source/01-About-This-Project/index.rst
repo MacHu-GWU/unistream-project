@@ -46,10 +46,6 @@ For end-users, **this project offers a set of concrete implementations of client
 
     `dataclasses <https://docs.python.org/3/library/dataclasses.html>`_ based record class
 
-:class:`~unistream.records.aws_kinesis.KinesisRecord`
-
-    Dataclass record class for AWS Kinesis Stream
-
 :class:`~unistream.buffers.file_buffer.FileBuffer`
 
     A file based buffer, it use local log file as write-ahead-log (WAL) to persist the buffer.
@@ -58,26 +54,14 @@ For end-users, **this project offers a set of concrete implementations of client
 
     A simple producer that send data to a target file on your local machine in append-only mode. This producer is for demo and for testing purpose.
 
-:class:`~unistream.producers.aws_cloudwatch_logs.AwsCloudWatchLogsProducer`
-
-    A simple AWS CloudWatch Logs producers.
-
-:class:`~unistream.producers.aws_kinesis.AwsKinesisStreamProducer`
-
-    A simple AWS Kinesis data stream producers.
-
 :class:`~unistream.checkpoints.simple.SimpleCheckpoint`
 
     A simple checkpoint using local json file for persistence.
 
-:class:`~unistream.checkpoints.dynamodb_s3.DynamoDBS3CheckPoint`
-
-    This checkpoint implementation uses DynamoDB to store metadata and S3 to store records data.
-
 :class:`~unistream.consumers.simple.SimpleConsumer`
 
-    This consumer works with :class:`~unistream.producers.aws_kinesis.AwsKinesisStreamProducer` seamlessly.
+    This consumer reads from the local file written by :class:`~unistream.producers.simple.SimpleProducer`.
 
-:class:`~unistream.consumers.aws_kinesis.AwsKinesisStreamConsumer`
+.. note::
 
-    This consumer works with :class:`~unistream.producers.aws_kinesis.AwsKinesisStreamProducer` seamlessly.
+    Vendor-specific implementations (AWS Kinesis, AWS CloudWatch Logs, DynamoDB+S3 checkpoint, etc.) are released as separate plugin packages — for example ``unistream-aws-kinesis``, ``unistream-aws-cloudwatch``, ``unistream-aws-dynamodb``. The core ``unistream`` library only ships in-memory and local-file implementations.
