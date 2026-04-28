@@ -2,13 +2,12 @@
 
 from pathlib import Path
 
-import moto
 from rich import print as rprint
 
 from unistream.records.dataclass import DataClassRecord
 from unistream.checkpoints.dynamodb_s3 import DynamoDBS3CheckPoint
 
-from unistream.tests.mock_aws import BaseMockTest
+from unistream.tests.mock_aws import BaseMockAwsTest
 
 dir_here = Path(__file__).absolute().parent
 
@@ -19,13 +18,7 @@ pk_name = "checkpoint_id"
 pk_value = "checkpoint-1"
 
 
-class TestDynamoDBS3CheckPoint(BaseMockTest):
-    mock_list = [
-        moto.mock_sts,
-        moto.mock_dynamodb,
-        moto.mock_s3,
-    ]
-
+class TestDynamoDBS3CheckPoint(BaseMockAwsTest):
     @classmethod
     def setup_class_post_hook(cls):
         cls.bsm.s3_client.create_bucket(Bucket=bucket)

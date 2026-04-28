@@ -592,7 +592,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -615,6 +615,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/20/b5/23b216d9d985a956623b6bd12d4086b60f0059b27799f23016af04a74ea1/fastjsonschema-2.21.2.tar.gz", hash = "sha256:b1eb43748041c880796cd077f1a07c3d94e93ae84bba5ed36800a33554ae05de", size = 374130, upload-time = "2025-08-14T18:49:36.666Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/a8/20d0723294217e47de6d9e2e40fd4a9d2f7c4b6ef974babd482a59743694/fastjsonschema-2.21.2-py3-none-any.whl", hash = "sha256:1c797122d0a86c5cace2e54bf4e819c36223b552017172f32c5c024a6b77e463", size = 24024, upload-time = "2025-08-14T18:49:34.776Z" },
+]
+
+[[package]]
+name = "func-args"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/04/19/bb084bcac2442ff3a764e59b08ea60ac7840cfc674f9074751caf21a0498/func_args-0.1.1.tar.gz", hash = "sha256:4815248811505c6bb75fbc03059448323a4b7e58fa6fa17b525c1dae75a7565b", size = 7065, upload-time = "2023-02-16T14:36:35.659Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/c6/7c57a76acd4f52aafaa47c7884b2c7344dac6696591efcce593d4de29474/func_args-0.1.1-py2.py3-none-any.whl", hash = "sha256:8640ffee0ae20dafa775bd012ced8b20835200bdb0e5847b9ef004acbf553993", size = 5549, upload-time = "2023-02-16T14:36:33.618Z" },
 ]
 
 [[package]]
@@ -1971,6 +1980,7 @@ aws = [
     { name = "boto-session-manager" },
     { name = "boto3" },
     { name = "boto3-stubs", extra = ["dynamodb", "kinesis", "s3"] },
+    { name = "func-args" },
     { name = "moto" },
 ]
 dev = [
@@ -2005,6 +2015,7 @@ requires-dist = [
     { name = "boto3", marker = "extra == 'aws'", specifier = ">=1.41.5,<2.0.0" },
     { name = "boto3-stubs", extras = ["s3", "dynamodb", "kinesis"], marker = "extra == 'aws'", specifier = ">=1.41.5,<2.0.0" },
     { name = "docfly", marker = "extra == 'doc'", specifier = "==3.0.3" },
+    { name = "func-args", marker = "extra == 'aws'", specifier = ">=0.1.1,<1.0.0" },
     { name = "furo", marker = "extra == 'doc'", specifier = "==2024.8.6" },
     { name = "httpx", marker = "extra == 'mise'", specifier = ">=0.28.0,<1.0.0" },
     { name = "ipython", marker = "extra == 'doc'", specifier = ">=8.18.1,<8.19.0" },
