@@ -55,14 +55,31 @@ Welcome to ``unistream`` Documentation
 .. image:: https://unistream.readthedocs.io/en/latest/_static/unistream-logo.png
     :target: https://unistream.readthedocs.io/
 
-The library at hand provides a powerful abstraction for data producers and consumers—clients responsible for interfacing with stream processing systems. These clients handle the task of sending data to stream processing systems and pulling data from various streams, including but not limited to Apache Kafka, Apache Pulsar, AWS Kinesis, AWS SQS, and AWS CloudWatch logs.
+``unistream`` is a universal Producer / Consumer abstraction layer for stream systems. It lets you use a single, unified interface to send data to and pull data from any streaming backend — Apache Kafka, AWS Kinesis, AWS CloudWatch Logs, Apache Pulsar, or even local files — while the library handles batching, fault tolerance, retries, and exactly-once consumption behind the scenes.
 
-This library offers a comprehensive set of business-critical features out of the box:
+The core library ships only local-file implementations. Vendor-specific integrations (AWS Kinesis, CloudWatch Logs, DynamoDB checkpoint, etc.) are released as **separate plugin packages**.
 
-1. **Efficient Record Buffering:** It intelligently groups records into micro-batches, optimizing network bandwidth utilization for enhanced performance.
-2. **Data Integrity:** To ensure data integrity, the library leverages a local write-ahead log mechanism, mitigating the risk of unexpected errors and data loss during the data transfer process.
-3. **Automatic Retrying:** With an integrated automatic retry mechanism using exponential backoff strategies, transient errors are managed seamlessly, contributing to a robust and reliable data transfer process.
-4. **Checkpoint Management:** The library automatically handles checkpoints, allowing for the storage of consumption progress and processing status for each record. This feature enhances traceability and fault tolerance, especially in critical business use cases.
+
+Features
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. **Efficient Record Buffering:** Groups records into micro-batches with a Write-Ahead Log (WAL) for crash recovery, optimizing network bandwidth without risking data loss.
+2. **Non-blocking Exponential Backoff:** Automatic retry with configurable backoff schedules. The retry check is time-based (no ``sleep``), so your application thread is never blocked.
+3. **Checkpoint & Exactly-Once Consumption:** Per-record status tracking (pending → in_progress → succeeded / failed / exhausted), UUID-based concurrency locking with auto-expiry, and stream pointer persistence for fault-tolerant consumption.
+4. **Pluggable Architecture:** Five core abstractions (Record, Buffer, Producer, CheckPoint, Consumer) with clean ABC → Base → Concrete layering. Implement ``send()`` for a new producer or ``get_records()`` for a new consumer — the framework handles everything else.
+
+
+Core Abstractions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``AbcRecord`` / ``DataClassRecord`` — the atomic data unit (id + create_at + serialize/deserialize).
+- ``AbcBuffer`` / ``FileBuffer`` — WAL-backed batch buffer (put → should_i_emit → emit → commit).
+- ``AbcProducer`` / ``BaseProducer`` / ``SimpleProducer`` — non-blocking put() event loop with retry.
+- ``AbcCheckPoint`` / ``BaseCheckPoint`` / ``SimpleCheckpoint`` — per-record state machine + persistence.
+- ``AbcConsumer`` / ``BaseConsumer`` / ``SimpleConsumer`` — consumption loop with tenacity retry + DLQ hook.
+
+
+AI Agent Skill
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A self-contained `Claude Code skill <https://claude.com/claude-code>`_ is included at ``.claude/skills/unistream/SKILL.md``. It contains the complete API reference, protocols, and usage examples — any AI coding agent with this skill loaded can build custom producers, consumers, buffers, checkpoints, and records without reading the source code.
 
 
 .. _install:

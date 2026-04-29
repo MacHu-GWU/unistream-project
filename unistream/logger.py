@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from .vendor.nested_logger import NestedLogger
+from vislog.api import VisLog
 
-logger = NestedLogger(
+logger = VisLog(
     name="unistream",
     log_format="%(message)s",
 )
