@@ -8,16 +8,32 @@ x.y.z (Backlog)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
-- Stabilize the abstract class contracts (``AbcRecord``, ``AbcBuffer``, ``AbcProducer``, ``AbcCheckPoint``, ``AbcConsumer``) for v1.0.
-- Add parallel batch processing to ``BaseConsumer`` (currently only sequential).
-
 **Minor Improvements**
 
 **Bugfixes**
 
 **Miscellaneous**
 
-- All vendor-specific implementations (AWS Kinesis, AWS CloudWatch Logs, DynamoDB+S3 checkpoint) have been removed from this core library. They will be released as separate plugin packages (e.g. ``unistream-aws-kinesis``). See ``MIGRATION.md`` for the architecture plan.
+
+0.1.2 (2026-04-28)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Breaking Changes**
+
+- Removed all vendor-specific implementations from the core library: ``AwsCloudWatchLogsProducer``, ``AwsKinesisStreamProducer``, ``AwsKinesisStreamConsumer``, ``DynamoDBS3CheckPoint``, ``KinesisRecord``, ``KinesisGetRecordsResponseRecord``, ``KinesisStreamShard``. These will be released as separate plugin packages (e.g. ``unistream-aws-kinesis``, ``unistream-aws-cloudwatch``, ``unistream-aws-dynamodb``).
+- Removed ``unistream.api.exc`` and ``unistream.api.utils`` from public API; individual exceptions (``BufferIsEmptyError``, ``SendError``, ``ProcessError``, ``StreamIsClosedError``) are now exported directly from ``unistream.api``.
+
+**Minor Improvements**
+
+- Cleaned up dead code and fixed type hint errors across the codebase.
+- Improved test coverage for ``Tracker``, ``BaseCheckPoint``, ``BaseConsumer``, and ``SimpleConsumer``.
+- Reworked Sphinx documentation structure: moved API docs under ``docs/source/api/``, added "Who Implements What" guidance to all component docs, added Maintainer Guide section.
+- Migrated project tooling from ``setup.py`` / ``requirements*.txt`` to ``pyproject.toml`` + ``uv`` + ``mise``.
+- Updated CI workflow (GitHub Actions) to use the new ``mise``-based build pipeline.
+
+**Miscellaneous**
+
+- Added ``CLAUDE.md`` project guide for AI assistants.
+- Removed ``poc.ipynb`` debug notebook and ``cookiecutterize.py`` scaffolding script.
 
 
 0.1.1 (2024-01-10)
