@@ -215,7 +215,7 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
         tracker.update_time = now.isoformat()
         tracker.lock = uuid.uuid4().hex
         tracker.lock_time = now.isoformat()
-        tracker.lock_expire_time = (now + timedelta(expire)).isoformat()
+        tracker.lock_expire_time = (now + timedelta(seconds=expire)).isoformat()
 
     def mark_as_failed_or_exhausted(
         self,
