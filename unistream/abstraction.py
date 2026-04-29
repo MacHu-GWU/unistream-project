@@ -109,13 +109,18 @@ class AbcBuffer(abc.ABC):
 
     **Buffer Operations**
 
-    Users can interact with the buffer in the following ways:
-
     - :meth:`AbcBuffer.new`: A factory method to create a new buffer instance.
     - :meth:`AbcBuffer.put`: Places a record into the in-memory queue.
     - :meth:`AbcBuffer.should_i_emit`: Checks whether the buffer should emit records.
     - :meth:`AbcBuffer.emit`: Emits a list of records from the buffer, following the FIFO order.
     - :meth:`AbcBuffer.commit`: Marks previously emitted records as no longer needed.
+
+    **Who implements this**
+
+    All buffer methods are for **plugin/backend developers** to implement.
+    End users typically use a pre-built buffer (e.g.
+    :class:`~unistream.buffers.file_buffer.FileBuffer`) and do not need to
+    subclass this directly.
 
     In summary, this abstract buffer class provides a flexible and fault-tolerant
     mechanism for managing data records in a data producer application.
@@ -185,6 +190,13 @@ class AbcProducer(abc.ABC):
     - :meth:`AbcProducer.send`: Send batch records to target system.
     - :meth:`AbcProducer.put`: Put the record to the buffer and smartly decide
         whether to send the records.
+
+    **Who implements what**
+
+    - :meth:`send` and :meth:`new` — **Plugin/backend developers** implement
+      these to integrate with a specific streaming backend.
+    - :meth:`put` — **End users** call this method to send records.
+      It is already implemented in :class:`~unistream.producer.BaseProducer`.
     """
 
     buffer: "AbcBuffer"
@@ -200,7 +212,10 @@ class AbcProducer(abc.ABC):
     @abc.abstractmethod
     def send(self, records: Iterable["AbcRecord"]):
         """
-        Send batch records to target system.
+        **[Plugin Developer]** Send batch records to target system.
+
+        Plugin/backend developers implement this method to integrate with
+        a specific streaming backend (e.g. Kinesis ``put_records``, Kafka produce).
 
         .. note::
 
@@ -208,9 +223,8 @@ class AbcProducer(abc.ABC):
             error handling, retry, buffer. Just think of how to send a batch of records.
             Those logics will be handled by the buffer and other methods.
 
-        In your producer application code, you only need to call this method explicitly,
-        you only need to call :meth:`AbsProducer.put` method and this method will be called
-        when buffer is full.
+        End users do not call this method directly — call :meth:`put` instead,
+        and ``send`` will be invoked automatically when the buffer is full.
         """
         raise NotImplementedError
 
@@ -222,7 +236,11 @@ class AbcProducer(abc.ABC):
         verbose: bool = False,
     ):
         """
-        Put the record to the buffer and smartly decide whether to send the records.
+        **[End User API]** Put the record to the buffer and smartly decide
+        whether to send the records.
+
+        This is the main entry point for end users to send records.
+        Already implemented in :class:`~unistream.producer.BaseProducer`.
         """
         raise NotImplementedError
 
@@ -273,6 +291,18 @@ class AbcCheckPoint(abc.ABC):
     - :meth:`AbcCheckPoint.dump_as_in_progress`:
     - :meth:`AbcCheckPoint.dump_as_failed_or_exhausted`:
     - :meth:`AbcCheckPoint.dump_as_succeeded`:
+
+    **Who implements what**
+
+    - ``dump``, ``load``, ``dump_records``, ``load_records``, ``dump_as_*``
+      — **Plugin/backend developers** implement these to provide persistence
+      (e.g. DynamoDB, S3, local files).
+    - ``mark_as_*``, ``is_ready_for_next_batch``, ``update_for_new_batch``
+      — Already implemented in :class:`~unistream.checkpoint.BaseCheckPoint`.
+      These are **framework internal** methods called automatically by the
+      consumer loop.
+    - ``get_tracker``, ``get_not_succeeded_records``
+      — **End users** may call these for inspection or DLQ handling.
     """
 
     # --------------------------------------------------------------------------
@@ -438,9 +468,21 @@ class AbcConsumer(abc.ABC):
     **Consumer Operations**
 
     - :meth:`AbcConsumer.new`: A factory method to create a new consumer instance.
+    - :meth:`AbcConsumer.get_records`: Get records from the stream system.
     - :meth:`AbcConsumer.process_record`: Process a record. To indicate the processing is failed,
         it has to raise an exception.
     - :meth:`AbcConsumer.process_failed_record`: Process a failed record.
+
+    **Who implements what**
+
+    - :meth:`new` and :meth:`get_records` — **Plugin/backend developers**
+      implement these to integrate with a specific streaming backend.
+    - :meth:`process_record` — **End users** must implement this with their
+      business logic.
+    - :meth:`process_failed_record` — **End users** may override this to
+      send failed records to a dead-letter queue (DLQ). Default is no-op.
+    - ``process_batch()``, ``run()`` — **End users** call these methods
+      (implemented in :class:`~unistream.consumer.BaseConsumer`).
     """
 
     @classmethod
@@ -454,22 +496,31 @@ class AbcConsumer(abc.ABC):
     @abc.abstractmethod
     def get_records(self) -> Iterable[AbcRecord]:
         """
-        Get records from the target system.
+        **[Plugin Developer]** Get records from the stream system.
+
+        Plugin/backend developers implement this method to pull records from
+        a specific streaming backend (e.g. Kinesis ``get_records``,
+        Kafka poll).
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def process_record(self, record: AbcRecord):
         """
-        Process a record. To indicate the processing is failed, it has to
-        raise an exception.
+        **[End User]** Process a record.
+
+        End users must implement this method with their business logic.
+        To indicate the processing has failed, raise an exception.
         """
         raise NotImplementedError
 
     @abc.abstractmethod
     def process_failed_record(self, record: AbcRecord):
         """
-        Process a failed record.
+        **[End User]** Process a failed record.
+
+        End users may override this to send failed records to a
+        dead-letter queue (DLQ). The default implementation is a no-op.
         """
         raise NotImplementedError
 

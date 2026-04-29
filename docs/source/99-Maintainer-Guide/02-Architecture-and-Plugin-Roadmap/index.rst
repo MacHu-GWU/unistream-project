@@ -32,6 +32,14 @@ The codebase follows a strict layered design:
 - Plugins communicate with the core exclusively through the five ABCs. The ABC method signatures are frozen once a major version is released.
 
 
+Two Audiences for Extensibility
+------------------------------------------------------------------------------
+The layered design serves **two distinct audiences**:
+
+1. **Plugin / Backend Developers** (Layer 3) — They implement backend-specific methods: transport (``send``, ``get_records``), persistence (``dump*``, ``load*``), and buffer operations. They do not touch business logic.
+2. **End Users / Application Developers** — They implement business logic (``process_record``, ``process_failed_record``) and call ready-to-use API methods (``put``, ``process_batch``, ``run``). They use pre-built Layer 3 plugins and only need to understand the end-user API.
+
+
 Five Core Abstractions
 ------------------------------------------------------------------------------
 These five abstract classes define the entire protocol of the library. User-facing documentation covers them in depth — here we summarize only the role and key contract of each.

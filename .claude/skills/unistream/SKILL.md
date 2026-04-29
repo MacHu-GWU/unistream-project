@@ -38,6 +38,19 @@ AbcCheckPoint -> BaseCheckPoint -> SimpleCheckpoint / YourCheckpoint
 AbcConsumer  -> BaseConsumer  -> SimpleConsumer / YourConsumer
 ```
 
+### Two Audiences
+
+**Plugin / Backend Developers** implement backend-specific methods:
+- Producer: `send()`, `new()`
+- Buffer: all methods (`new`, `put`, `should_i_emit`, `emit`, `commit`)
+- Checkpoint: `dump`, `load`, `dump_records`, `load_records`, `dump_as_*`
+- Consumer: `get_records()`, `new()`
+
+**End Users (Application Developers)** implement business logic and call API:
+- Producer: call `put(record)` — buffer, retry, `send()` handled automatically
+- Consumer: implement `process_record(record)`, optionally `process_failed_record(record)`, call `process_batch()` or `run()`
+- Checkpoint: optionally call `get_tracker()`, `get_not_succeeded_records()` for inspection/DLQ
+
 Data flow:
 
 ```
@@ -147,8 +160,8 @@ if buffer.should_i_emit():
 | Method | Description |
 |--------|-------------|
 | `new(cls, **kwargs)` | Factory method. |
-| `send(records)` | Send batch records to target. **Subclass must implement this.** |
-| `put(record, skip_error=True, verbose=False)` | User-facing API. Manages buffer + retry internally. |
+| `send(records)` | **[Plugin Developer]** Send batch records to target. Subclass must implement this. |
+| `put(record, skip_error=True, verbose=False)` | **[End User API]** Manages buffer + retry internally. |
 
 ### Built-in: BaseProducer
 
@@ -228,7 +241,7 @@ class KinesisProducer(BaseProducer):
 
 ### Protocol (AbcCheckPoint)
 
-Persistence methods — **subclass must implement all of these**:
+Persistence methods — **plugin/backend developers must implement all of these**:
 
 | Method | Description |
 |--------|-------------|
@@ -254,17 +267,17 @@ Implements the full state machine. **Fields:**
 | `batch_sequence` | `int` | Nth batch being processed. |
 | `batch` | `dict[str, Tracker]` | Per-record status tracking (keyed by `record.id`). |
 
-**Key methods (already implemented):**
+**Key methods (already implemented — framework internal):**
 
 | Method | Description |
 |--------|-------------|
-| `mark_as_in_progress(record)` | Lock record, set status to `in_progress`, increment attempts. |
-| `mark_as_succeeded(record)` | Set status to `succeeded`, release lock. |
-| `mark_as_failed_or_exhausted(record, e)` | Set `failed` or `exhausted` based on attempt count, store error. |
-| `is_ready_for_next_batch() -> bool` | True when all records in batch reached terminal status. |
-| `update_for_new_batch(records, next_pointer)` | Create trackers for new batch, set next_pointer. |
-| `is_record_locked(record, lock, now) -> bool` | Check if record is locked by another worker. |
-| `get_not_succeeded_records(record_class, records)` | Return records that didn't succeed (for DLQ). |
+| `mark_as_in_progress(record)` | **[Framework Internal]** Lock record, set status to `in_progress`, increment attempts. |
+| `mark_as_succeeded(record)` | **[Framework Internal]** Set status to `succeeded`, release lock. |
+| `mark_as_failed_or_exhausted(record, e)` | **[Framework Internal]** Set `failed` or `exhausted` based on attempt count, store error. |
+| `is_ready_for_next_batch() -> bool` | **[Framework Internal]** True when all records in batch reached terminal status. |
+| `update_for_new_batch(records, next_pointer)` | **[Framework Internal]** Create trackers for new batch, set next_pointer. |
+| `is_record_locked(record, lock, now) -> bool` | **[Framework Internal]** Check if record is locked by another worker. |
+| `get_not_succeeded_records(record_class, records)` | **[End User]** Return records that didn't succeed (for DLQ). |
 
 ### Tracker
 
@@ -353,9 +366,9 @@ class DynamoDBS3CheckPoint(BaseCheckPoint):
 | Method | Description |
 |--------|-------------|
 | `new(cls, **kwargs)` | Factory method. |
-| `get_records(limit) -> (list[AbcRecord], T_POINTER)` | Pull batch from stream. **Subclass must implement.** |
-| `process_record(record)` | Process one record. Raise on failure. **Subclass must implement.** |
-| `process_failed_record(record)` | DLQ hook for exhausted records. Default: no-op. |
+| `get_records(limit) -> (list[AbcRecord], T_POINTER)` | **[Plugin Developer]** Pull batch from stream. Subclass must implement. |
+| `process_record(record)` | **[End User]** Process one record. Raise on failure. Must implement. |
+| `process_failed_record(record)` | **[End User]** DLQ hook for exhausted records. Default: no-op. |
 
 ### Built-in: BaseConsumer
 
@@ -379,9 +392,9 @@ Implements the full consumption loop with tenacity retry.
 
 | Method | Description |
 |--------|-------------|
-| `process_batch(verbose=False)` | Pull and process one batch. |
-| `run(verbose=False)` | Infinite loop calling `process_batch()`. |
-| `commit()` | Advance `start_pointer = next_pointer` and persist. |
+| `process_batch(verbose=False)` | **[End User API]** Pull and process one batch. |
+| `run(verbose=False)` | **[End User API]** Infinite loop calling `process_batch()`. |
+| `commit()` | **[Framework Internal]** Advance `start_pointer = next_pointer` and persist. |
 
 ### Built-in: SimpleConsumer
 

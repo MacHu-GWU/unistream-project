@@ -40,6 +40,24 @@ Additionally, **this project provides a set of base classes that can assist in c
 - :class:`~unistream.checkpoint.BaseCheckPoint`: base class with pre-defined logics for all kinds of checkpoint.
 - :class:`~unistream.consumer.BaseConsumer`: base class with pre-defined logics for all kinds of consumer.
 
+
+Who Implements What
+------------------------------------------------------------------------------
+There are two types of developers who extend these classes, and each has a different set of responsibilities:
+
+**Plugin / Backend Developers** create integrations with specific streaming backends (Kinesis, Kafka, DynamoDB, etc.). They implement:
+
+- **Producer**: ``send()`` and ``new()`` — transport records to the backend.
+- **Buffer**: all methods (``new``, ``put``, ``should_i_emit``, ``emit``, ``commit``) — manage the WAL persistence layer.
+- **Checkpoint**: ``dump``, ``load``, ``dump_records``, ``load_records``, ``dump_as_*`` — persist checkpoint state.
+- **Consumer**: ``get_records()`` and ``new()`` — pull records from the backend.
+
+**End Users (Application Developers)** write business logic on top of a pre-built backend. They implement or call:
+
+- **Producer**: call ``put(record)`` to send records — buffer, retry, and ``send()`` are handled automatically.
+- **Consumer**: implement ``process_record(record)`` with business logic, optionally override ``process_failed_record(record)`` for DLQ handling, then call ``process_batch()`` or ``run()`` to start consuming.
+- **Checkpoint**: optionally call ``get_tracker()`` or ``get_not_succeeded_records()`` for inspection.
+
 For end-users, **this project offers a set of concrete implementations of client libraries for popular streaming systems. Additionally, you can effortlessly create your own producer client library for other streaming systems by inheriting the aforementioned three low-level modules**.
 
 :class:`~unistream.records.dataclass.DataClassRecord`

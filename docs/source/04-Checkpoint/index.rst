@@ -13,6 +13,13 @@ Checkpoint serves as a component that provides the functionalities mentioned abo
 In this project, we offer a base class, :class:`~unistream.checkpoint.BaseCheckPoint`, which implements the core logic of checkpointing but intentionally leaves the backend read/write logic unimplemented. This design allows you to extend the class to use any backend of your choice.
 
 
+Who Implements What
+------------------------------------------------------------------------------
+- ``dump``, ``load``, ``dump_records``, ``load_records``, ``dump_as_*`` — **Plugin/backend developers** implement these to provide persistence for a specific backend (e.g. DynamoDB + S3, local JSON files).
+- ``mark_as_*``, ``is_ready_for_next_batch``, ``update_for_new_batch`` — **Framework internal**, already implemented in :class:`~unistream.checkpoint.BaseCheckPoint`. Called automatically by the consumer loop.
+- ``get_tracker``, ``get_not_succeeded_records`` — **End users** may call these for inspection or DLQ handling.
+
+
 .. image:: ./consumer-and-checkpoint.png
 
 

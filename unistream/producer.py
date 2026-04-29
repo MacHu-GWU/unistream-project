@@ -93,6 +93,13 @@ class BaseProducer(AbcProducer, BaseModel):
     Provides buffer management and exponential-backoff retry logic.
     Subclasses only need to implement :meth:`~unistream.abstraction.AbcProducer.send`.
 
+    **Who implements what**
+
+    - :meth:`send` — **Plugin/backend developers** implement this to send
+      records to a specific streaming backend.
+    - :meth:`put` — **End users** call this to send records. Already
+      implemented with buffer management and retry logic.
+
     :param buffer: the :class:`~unistream.abstraction.AbcBuffer` backend for batching records.
     :param retry_config: the :class:`RetryConfig` for send retry behavior.
     """

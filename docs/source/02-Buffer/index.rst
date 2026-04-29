@@ -12,6 +12,12 @@ There are many methods for implementing the WAL persistence layer. In general, i
 
 The core library ships :class:`~unistream.buffers.file_buffer.FileBuffer`, a local-file WAL implementation. Plugin packages may provide alternative buffer backends for other persistence layers.
 
+.. note::
+
+    All buffer methods are for **plugin/backend developers** to implement.
+    End users typically use a pre-built buffer (e.g. :class:`~unistream.buffers.file_buffer.FileBuffer`)
+    and do not need to subclass the buffer directly.
+
 
 File Buffer
 ------------------------------------------------------------------------------

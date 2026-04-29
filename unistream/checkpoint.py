@@ -125,6 +125,17 @@ class BaseCheckPoint(DataClass, AbcCheckPoint, BaseModel):
     any backend for checkpoint data persistence. For example, you can use
     a file, a database like AWS DynamoDB, or cloud storage like AWS S3.
 
+    **Who implements what**
+
+    - ``dump``, ``load``, ``dump_records``, ``load_records``, ``dump_as_*``
+      — **Plugin/backend developers** implement these to provide persistence
+      for a specific backend.
+    - ``mark_as_*``, ``is_ready_for_next_batch``, ``update_for_new_batch``
+      — **Framework internal**, already implemented. Called automatically
+      by the consumer loop.
+    - ``get_tracker``, ``get_not_succeeded_records``
+      — **End users** may call these for inspection or DLQ handling.
+
     :param lock_expire: the lock expiration time in seconds.
     :param max_attempts: the maximum number of attempts to process a record.
     :param initial_pointer: the initial pointer to start reading the records.

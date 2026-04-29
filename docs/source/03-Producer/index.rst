@@ -11,6 +11,12 @@ The Producer is a program that continuously generates records and sends them to 
 .. image:: event-loop.png
 
 
+Who Implements What
+------------------------------------------------------------------------------
+- ``send()`` and ``new()`` — **Plugin/backend developers** implement these to integrate with a specific streaming backend (e.g. Kinesis ``put_records``, Kafka produce).
+- ``put(record)`` — **End users** call this method to send records. Buffer management, retry, and ``send()`` invocation are handled automatically by :class:`~unistream.producer.BaseProducer`.
+
+
 Error Handling
 ------------------------------------------------------------------------------
 What exponential backoff mean is that, we wait longer and longer between each retry and stop retrying at certain number of failure. The wait internal and max retry count strategy is called a "**Schedule**".

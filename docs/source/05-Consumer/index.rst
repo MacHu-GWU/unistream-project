@@ -9,6 +9,14 @@ The Consumer is a program that continuously pulls records from a stream system a
 In the previous document, we introduced the concept of :ref:`checkpoint`. A consumer program essentially leverages the checkpoint, updating the processing status before and after executing processing logic, and handling errors appropriately. It also persists the checkpoint data to the storage backend every time it changes.
 
 
+Who Implements What
+------------------------------------------------------------------------------
+- ``get_records()`` and ``new()`` — **Plugin/backend developers** implement these to pull records from a specific streaming backend (e.g. Kinesis ``get_records``, Kafka poll).
+- ``process_record(record)`` — **End users** must implement this with their business logic. Raise an exception to indicate failure; the framework handles retries automatically.
+- ``process_failed_record(record)`` — **End users** may override this to send failed records to a DLQ. Default is no-op.
+- ``process_batch()``, ``run()`` — **End users** call these to start consuming. Already implemented in :class:`~unistream.consumer.BaseConsumer`.
+
+
 What is Dead-Letter-Queue (DLQ)
 ------------------------------------------------------------------------------
 Some records may still fail after multiple retries. Typically, we aim to ensure smooth data processing without blocking it. In business-critical applications, it's common practice to route failed data to a dedicated location, often a message queue or another stream system. This allows for debugging and later reprocessing.

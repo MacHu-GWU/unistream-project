@@ -32,6 +32,17 @@ class BaseConsumer(AbcConsumer, BaseModel):
     Consumer continuously fetches batch records from the stream system
     and process them.
 
+    **Who implements what**
+
+    - :meth:`get_records` — **Plugin/backend developers** implement this to
+      pull records from a specific streaming backend.
+    - :meth:`process_record` — **End users** must implement this with their
+      business logic.
+    - :meth:`process_failed_record` — **End users** may override this to
+      send failed records to a DLQ. Default is no-op.
+    - :meth:`process_batch`, :meth:`run` — **End users** call these to start
+      consuming. Already implemented.
+
     :param record_class: the record class.
     :param limit: the max number of records to fetch from the stream system.
     :param checkpoint: the :class:`~unistream.checkpoint.BaseCheckpoint` object
@@ -60,9 +71,13 @@ class BaseConsumer(AbcConsumer, BaseModel):
         limit: int = None,
     ) -> tuple[list[AbcRecord], T_POINTER]:
         """
-        Get records from the stream system and determine the value of the
-        next pointer for the next batch if we successfully process
-        this batch of records.
+        **[Plugin Developer]** Get records from the stream system and determine
+        the value of the next pointer for the next batch if we successfully
+        process this batch of records.
+
+        Plugin/backend developers implement this method to pull records from
+        a specific streaming backend (e.g. Kinesis ``get_records``,
+        Kafka poll).
 
         :param limit: The maximum number of records to return.
         :return: a two-item tuple. the first one is a list of records
@@ -70,8 +85,6 @@ class BaseConsumer(AbcConsumer, BaseModel):
             if we successfully process this batch of records.
 
         .. important::
-
-            User has to implement this method.
 
             If you need additional parameters other than the :class:`BaseConsumer`
             built-in attributes and ``limit``, you should extend this class
@@ -81,17 +94,17 @@ class BaseConsumer(AbcConsumer, BaseModel):
 
     def process_record(self, record: AbcRecord):
         """
-        This method defines how to process a record.
+        **[End User]** This method defines how to process a record.
 
-        .. important::
-
-            User has to implement this method.
+        End users must implement this method with their business logic.
+        Raise an exception to indicate failure; the framework handles
+        retries automatically.
         """
         raise NotImplementedError
 
     def process_failed_record(self, record: AbcRecord):
         """
-        This method defines how to process a failed record.
+        **[End User]** This method defines how to process a failed record.
 
         .. note::
 
@@ -208,6 +221,8 @@ class BaseConsumer(AbcConsumer, BaseModel):
         verbose: bool = False,
     ):
         """
+        **[End User API]** Process one batch of records.
+
         .. note::
 
             Currently, we only support sequential processing.
@@ -222,7 +237,8 @@ class BaseConsumer(AbcConsumer, BaseModel):
         verbose: bool = False,
     ):
         """
-        Run the consumer.
+        **[End User API]** Run the consumer in an infinite loop, continuously
+        processing batches with a delay between each.
         """
         while 1:
             self.process_batch(verbose=verbose)
