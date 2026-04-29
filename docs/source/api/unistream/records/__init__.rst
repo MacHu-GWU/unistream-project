@@ -1,7 +1,7 @@
-consumers
-=========
+records
+=======
 
-.. automodule:: unistream.consumers
+.. automodule:: unistream.records
     :members:
 
 sub packages and modules
@@ -10,5 +10,5 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    simple <simple>
-
+    dataclass <dataclass>
+    

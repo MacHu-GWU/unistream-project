@@ -1,7 +1,7 @@
-checkpoints
-===========
+consumers
+=========
 
-.. automodule:: unistream.checkpoints
+.. automodule:: unistream.consumers
     :members:
 
 sub packages and modules
@@ -11,4 +11,4 @@ sub packages and modules
     :maxdepth: 1
 
     simple <simple>
-
+    

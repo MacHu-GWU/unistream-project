@@ -10,7 +10,7 @@ Buffer is a critical component for producer program. Buffer packs your records i
 
 There are many methods for implementing the WAL persistence layer. In general, if you want to minimize the probability of data loss, performance will be lower, latency will be higher, and costs will also increase.
 
-This library provides couple of different buffer implementations, each with different trade-offs. You can choose the one that best fits your use case.
+The core library ships :class:`~unistream.buffers.file_buffer.FileBuffer`, a local-file WAL implementation. Plugin packages may provide alternative buffer backends for other persistence layers.
 
 
 File Buffer
@@ -21,7 +21,7 @@ This implementation uses local file to store WAL. Everytime the buffer receive a
 
 .. image:: ./emit.png
 
-Below is the sample usage of :class:`~unistream.buffer.file_buffer.FileBuffer`.
+Below is the sample usage of :class:`~unistream.buffers.file_buffer.FileBuffer`.
 
 .. dropdown:: file_buffer.py
 

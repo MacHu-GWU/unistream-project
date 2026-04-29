@@ -10,7 +10,7 @@ For a consumer program, it typically pulls a batch of records to process either 
 
 Checkpoint serves as a component that provides the functionalities mentioned above. Typically, status data, also considered as metadata, is small and should be stored in a high-performance database like AWS DynamoDB or Redis. On the other hand, considering that the records data can be quite substantial, AWS S3 becomes a preferable choice.
 
-In this project, we offer a base class, :class:`~unistream.consumer.CheckPoint`, which implements the core logic of checkpointing but intentionally leaves the backend read/write logic unimplemented. This design allows you to extend the class to use any backend of your choice."
+In this project, we offer a base class, :class:`~unistream.checkpoint.BaseCheckPoint`, which implements the core logic of checkpointing but intentionally leaves the backend read/write logic unimplemented. This design allows you to extend the class to use any backend of your choice.
 
 
 .. image:: ./consumer-and-checkpoint.png

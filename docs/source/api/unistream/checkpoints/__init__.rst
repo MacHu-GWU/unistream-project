@@ -1,7 +1,7 @@
-producers
-=========
+checkpoints
+===========
 
-.. automodule:: unistream.producers
+.. automodule:: unistream.checkpoints
     :members:
 
 sub packages and modules
@@ -11,4 +11,4 @@ sub packages and modules
     :maxdepth: 1
 
     simple <simple>
-
+    

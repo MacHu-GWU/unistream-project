@@ -1,7 +1,7 @@
-records
-=======
+producers
+=========
 
-.. automodule:: unistream.records
+.. automodule:: unistream.producers
     :members:
 
 sub packages and modules
@@ -10,5 +10,5 @@ sub packages and modules
 .. toctree::
     :maxdepth: 1
 
-    dataclass <dataclass>
-
+    simple <simple>
+    

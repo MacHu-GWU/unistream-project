@@ -26,12 +26,12 @@ In my personal professional experience, I have done projects involving the devel
 
 Features
 ------------------------------------------------------------------------------
-This project provides an abstraction layer of producer. **It has the following low class to define important concepts and their interfaces**:
+This project provides an abstraction layer for stream producers and consumers. **It defines the following abstract classes as the core interfaces**:
 
 - :class:`~unistream.abstraction.AbcRecord`: Abstract Class for a Record to Be Sent to a Target System.
 - :class:`~unistream.abstraction.AbcBuffer`: Abstract Buffer Class for Data Producers.
 - :class:`~unistream.abstraction.AbcProducer`: Abstract Class for Data Producers.
-- :class:`~unistream.abstraction.AbcCheckpoint`: Abstract Checkpoint Class for Data Consumer.
+- :class:`~unistream.abstraction.AbcCheckPoint`: Abstract Checkpoint Class for Data Consumer.
 - :class:`~unistream.abstraction.AbcConsumer`: Abstract Class for Data Consumer.
 
 Additionally, **this project provides a set of base classes that can assist in creating concrete implementations for specific stream systems using various data persistency backends**.
