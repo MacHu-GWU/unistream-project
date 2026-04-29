@@ -3,7 +3,7 @@
     :target: https://unistream.readthedocs.io/en/latest/
     :alt: Documentation Status
 
-.. image:: https://github.com/MacHu-GWU/unistream-project/workflows/CI/badge.svg
+.. image:: https://github.com/MacHu-GWU/unistream-project/actions/workflows/main.yml/badge.svg
     :target: https://github.com/MacHu-GWU/unistream-project/actions?query=workflow:CI
 
 .. image:: https://codecov.io/gh/MacHu-GWU/unistream-project/branch/main/graph/badge.svg
@@ -18,16 +18,13 @@
 .. image:: https://img.shields.io/pypi/pyversions/unistream.svg
     :target: https://pypi.python.org/pypi/unistream
 
-.. image:: https://img.shields.io/badge/Release_History!--None.svg?style=social
+.. image:: https://img.shields.io/badge/✍️_Release_History!--None.svg?style=social&logo=github
     :target: https://github.com/MacHu-GWU/unistream-project/blob/main/release-history.rst
 
-.. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
+.. image:: https://img.shields.io/badge/⭐_Star_me_on_GitHub!--None.svg?style=social&logo=github
     :target: https://github.com/MacHu-GWU/unistream-project
 
 ------
-
-.. image:: https://img.shields.io/badge/Link-Document-blue.svg
-    :target: https://unistream.readthedocs.io/en/latest/
 
 .. image:: https://img.shields.io/badge/Link-API-blue.svg
     :target: https://unistream.readthedocs.io/en/latest/py-modindex.html
@@ -50,10 +47,8 @@
 
 Welcome to ``unistream`` Documentation
 ==============================================================================
-📔 See `Full Documentation HERE <https://unistream.readthedocs.io/>`_.
-
 .. image:: https://unistream.readthedocs.io/en/latest/_static/unistream-logo.png
-    :target: https://unistream.readthedocs.io/
+    :target: https://unistream.readthedocs.io/en/latest/
 
 ``unistream`` is a universal Producer / Consumer abstraction layer for stream systems. It lets you use a single, unified interface to send data to and pull data from any streaming backend — Apache Kafka, AWS Kinesis, AWS CloudWatch Logs, Apache Pulsar, or even local files — while the library handles batching, fault tolerance, retries, and exactly-once consumption behind the scenes.
 
