@@ -406,7 +406,7 @@ class AbcCheckPoint(abc.ABC):
     ):
         """
         Dump the tracker to the persistence layer after calling
-        :class:`BaseCheckpoint.mark_as_in_progress`.
+        :class:`BaseCheckpoint.mark_as_succeeded`.
 
         .. note::
 

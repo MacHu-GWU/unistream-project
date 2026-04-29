@@ -81,7 +81,7 @@ class BaseConsumer(AbcConsumer, BaseModel):
 
     def process_record(self, record: AbcRecord):
         """
-        This method defines how to process a failed record.
+        This method defines how to process a record.
 
         .. important::
 
