@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Usage example::
+Usage example:
 
-    >>> import unistream.api as unistream
-
-    >>> unistream.DataClassRecord
-    >>> unistream.FileBuffer
-    >>> unistream.SimpleCheckpoint
-    >>> unistream.SimpleProducer
-    >>> unistream.SimpleConsumer
+>>> import unistream.api as unistream
 """
 
 from .exc import BufferIsEmptyError

@@ -8,7 +8,6 @@ import shutil
 from pathlib import Path
 
 import pytest
-from rich import print as rprint
 
 from unistream.exc import SendError
 from unistream.records.dataclass import DataClassRecord

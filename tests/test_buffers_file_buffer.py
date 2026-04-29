@@ -7,7 +7,6 @@ from pathlib import Path
 
 from unistream.records.dataclass import DataClassRecord
 from unistream.buffers.file_buffer import FileBuffer, BufferIsEmptyError
-from rich import print as rprint
 
 dir_here = Path(__file__).absolute().parent
 

@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import typing as T
 import random
 import time
 import shutil
 import dataclasses
 from pathlib import Path
-
-from rich import print as rprint
 
 from unistream.api import (
     DataClassRecord,
@@ -20,7 +17,7 @@ def rand_value() -> int:
     return random.randint(1, 100)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class MyRecord(DataClassRecord):
     value: int = dataclasses.field(default_factory=rand_value)
 

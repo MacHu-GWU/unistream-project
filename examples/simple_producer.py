@@ -8,7 +8,7 @@ import dataclasses
 from pathlib import Path
 
 from unistream.api import (
-    exc,
+    SendError,
     DataClassRecord,
     FileBuffer,
     RetryConfig,
@@ -20,7 +20,7 @@ def rand_value() -> int:
     return random.randint(1, 100)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class MyRecord(DataClassRecord):
     value: int = dataclasses.field(default_factory=rand_value)
 
@@ -29,7 +29,7 @@ class MyRecord(DataClassRecord):
 class MyProducer(SimpleProducer):
     def send(self, records: T.List[MyRecord]):
         if random.randint(1, 100) <= 50:
-            raise exc.SendError("randomly failed due to send error")
+            raise SendError("randomly failed due to send error")
         super().send(records)
 
 

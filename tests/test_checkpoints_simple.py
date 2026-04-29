@@ -2,8 +2,6 @@
 
 from pathlib import Path
 
-from rich import print as rprint
-
 from unistream.records.dataclass import DataClassRecord
 from unistream.checkpoints.simple import SimpleCheckpoint
 
